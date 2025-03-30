@@ -1,0 +1,74 @@
+<div style="margin-left: 25px;">
+    <p>harvest-tool works!</p>
+    <mat-form-field>
+        <mat-label>Select The Creature's Type</mat-label>
+        <mat-select [(value)]="selectedType" (selectionChange)="populate()">
+        @for (skillType of skillTypeTable; track skillType) {
+            <mat-option [value]="skillType">{{skillType.type}}</mat-option>
+        }
+        </mat-select>
+    </mat-form-field>
+    <br>
+    <!-- <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="home"></mat-icon> -->
+
+    <mat-form-field>
+        <mat-label>Select The Creature's CR</mat-label>
+        <mat-select [(value)]="selectedEssence" (selectionChange)="populate()">
+        @for (essence of essenceTable; track essence) {
+            <mat-option [value]="essence">{{essence.min_CR}}-{{essence.max_CR}}</mat-option>
+        }
+        </mat-select>
+    </mat-form-field>
+    <div>
+        Associated Skill is: {{selectedType.skill}}
+    </div>
+    <div>
+        Essence Gained is: {{selectedEssence.type}} Essence, which is {{selectedEssence.rarity}}, and the DC is {{selectedEssence.dc}}
+    </div>
+    <div style="display: flex; flex-direction: row;">
+        <div *ngIf="selectMonsterCompenents.length != 0" style="width: 49%;">
+            <table mat-table [dataSource]="selectMonsterCompenents" class="mat-elevation-z8">
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef> Name </th>
+                  <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+              
+                <!-- DC Column -->
+                <ng-container matColumnDef="dc">
+                  <th mat-header-cell *matHeaderCellDef> Harvest DC </th>
+                  <td mat-cell *matCellDef="let element"> {{element.dc}} </td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef> Quantity to Harvest </th>
+                  <td mat-cell *matCellDef="let element"> 
+                    x/x
+                    <button (click)="addToHarvest(element)"><mat-icon>add</mat-icon></button>
+                  </td>
+                </ng-container>
+              
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+        </div>
+          
+        
+        <div *ngIf="componentsToHarvest.length != 0" style="width: 49%;">
+            <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+                @for (comp of componentsToHarvest; track $index) {
+                  <div class="example-box" cdkDrag>
+                    {{comp.name}}  DC: {{comp.dc}}  Total DC: {{getTotalDC($index)}}
+                    <button (click)="remove(comp, $index)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+              
+        </div>
+    </div>
+
+
+</div>
